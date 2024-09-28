@@ -16,14 +16,14 @@ const Index = () => {
   useEffect(() => {
     // Load the donation widget script
     const script = document.createElement('script');
-    script.src = '/donation-widget.js';
+    script.src = 'donation-widget.js';
     script.async = true;
     document.body.appendChild(script);
 
     // Initialize the donation widget after the script has loaded
     script.onload = () => {
       if (window.createDonationWidget) {
-        window.createDonationWidget('your-upi-id@upi', 10, 'Support UniW');
+        window.createDonationWidget('adnanmuhammad4393@okicici', 90, 'Support UniW');
       }
     };
 
