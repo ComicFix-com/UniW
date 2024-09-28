@@ -14,23 +14,10 @@ const Index = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Load the donation widget script
-    const script = document.createElement('script');
-    script.src = 'donation-widget.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    // Initialize the donation widget after the script has loaded
-    script.onload = () => {
-      if (window.createDonationWidget) {
-        window.createDonationWidget('adnanmuhammad4393@okicici', 90, 'Support UniW');
-      }
-    };
-
-    // Clean up the script when the component unmounts
-    return () => {
-      document.body.removeChild(script);
-    };
+    // Initialize the donation widget
+    if (window.createDonationWidget) {
+      window.createDonationWidget('adnanmuhammad4393@okicici', 90, 'Support UniW');
+    }
   }, []);
 
   const addPoints = (amount) => {
