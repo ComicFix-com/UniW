@@ -92,15 +92,16 @@
 
         // Add Google Pay icon
         const icon = document.createElement('img');
-        icon.src = 'https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/google-pay-icon.png';
+        icon.src = '/google-pay-icon.png'; // Updated to use local image
         icon.alt = 'Google Pay';
         icon.className = 'gpay-icon';
 
         // Add text
-        button.textContent = `Support via Google Pay`;
+        const text = document.createTextNode('Support via Google Pay');
 
         // Append icon and text to button
         button.appendChild(icon);
+        button.appendChild(text);
         container.appendChild(button);
 
         // Append container to the body
