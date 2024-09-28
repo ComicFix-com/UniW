@@ -1,14 +1,19 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Trophy } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const leaderboardData = [
-  { rank: 1, name: "Alice", points: 1000, avatar: "https://i.pravatar.cc/40?img=1" },
-  { rank: 2, name: "Bob", points: 950, avatar: "https://i.pravatar.cc/40?img=2" },
-  { rank: 3, name: "Charlie", points: 900, avatar: "https://i.pravatar.cc/40?img=3" },
-  { rank: 4, name: "David", points: 850, avatar: "https://i.pravatar.cc/40?img=4" },
-  { rank: 5, name: "Eve", points: 800, avatar: "https://i.pravatar.cc/40?img=5" },
+  { rank: 1, name: "Alice", points: 1000 },
+  { rank: 2, name: "Bob", points: 950 },
+  { rank: 3, name: "Charlie", points: 900 },
+  { rank: 4, name: "David", points: 850 },
+  { rank: 5, name: "Eve", points: 800 },
 ];
+
+const getInitials = (name) => {
+  return name.split(' ').map(n => n[0]).join('').toUpperCase();
+};
 
 export const Leaderboard = () => {
   return (
@@ -31,7 +36,9 @@ export const Leaderboard = () => {
                 {player.rank}
               </TableCell>
               <TableCell className="flex items-center">
-                <img src={player.avatar} alt={player.name} className="w-8 h-8 rounded-full mr-2" />
+                <Avatar className="w-8 h-8 mr-2">
+                  <AvatarFallback>{getInitials(player.name)}</AvatarFallback>
+                </Avatar>
                 {player.name}
               </TableCell>
               <TableCell className="text-right font-semibold">{player.points}</TableCell>
