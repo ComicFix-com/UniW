@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -28,6 +28,16 @@ export const DailyQuiz = ({ addPoints }) => {
   const [isAnswered, setIsAnswered] = useState(false);
   const [score, setScore] = useState(0);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isAnswered) {
+        nextQuestion();
+      }
+    }, 3000); // Change question after 3 seconds
+
+    return () => clearTimeout(timer);
+  }, [isAnswered]);
+
   const handleSubmit = () => {
     if (selectedAnswer === quizQuestions[currentQuestion].correctAnswer) {
       setScore(prevScore => prevScore + 1);
@@ -39,9 +49,9 @@ export const DailyQuiz = ({ addPoints }) => {
   const nextQuestion = () => {
     setSelectedAnswer(null);
     setIsAnswered(false);
-    if (currentQuestion < quizQuestions.length - 1) {
-      setCurrentQuestion(prevQuestion => prevQuestion + 1);
-    }
+    setCurrentQuestion((prevQuestion) => 
+      (prevQuestion + 1) % quizQuestions.length
+    );
   };
 
   const resetQuiz = () => {
@@ -75,14 +85,11 @@ export const DailyQuiz = ({ addPoints }) => {
       </RadioGroup>
       {!isAnswered ? (
         <Button onClick={handleSubmit} disabled={!selectedAnswer}>Submit Answer</Button>
-      ) : currentQuestion < quizQuestions.length - 1 ? (
-        <Button onClick={nextQuestion}>Next Question</Button>
       ) : (
-        <div>
-          <p className="mb-4 text-xl font-bold">Quiz Complete! Your score: {score}/{quizQuestions.length}</p>
-          <Button onClick={resetQuiz}>Restart Quiz</Button>
-        </div>
+        <p className="text-lg font-semibold">Next question in 3 seconds...</p>
       )}
+      <p className="mt-4 text-xl font-bold">Current Score: {score}/{quizQuestions.length}</p>
+      <Button onClick={resetQuiz} className="mt-4">Restart Quiz</Button>
     </div>
   );
 };
