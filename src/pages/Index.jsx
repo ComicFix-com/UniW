@@ -6,6 +6,7 @@ import { GameOfTheDay } from '@/components/GameOfTheDay';
 import { DailyQuiz } from '@/components/DailyQuiz';
 import { Leaderboard } from '@/components/Leaderboard';
 import { Rewards } from '@/components/Rewards';
+import { PuzzleMaster } from '@/components/PuzzleMaster';
 
 const Index = () => {
   const [points, setPoints] = useState(0);
@@ -23,9 +24,10 @@ const Index = () => {
 
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
         <Tabs defaultValue="game" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 bg-indigo-100">
+          <TabsList className="grid w-full grid-cols-5 bg-indigo-100">
             <TabsTrigger value="game" className="data-[state=active]:bg-white">Game of the Day</TabsTrigger>
             <TabsTrigger value="quiz" className="data-[state=active]:bg-white">Daily Quiz</TabsTrigger>
+            <TabsTrigger value="puzzle" className="data-[state=active]:bg-white">Puzzle Master</TabsTrigger>
             <TabsTrigger value="leaderboard" className="data-[state=active]:bg-white">Leaderboard</TabsTrigger>
             <TabsTrigger value="rewards" className="data-[state=active]:bg-white">Rewards</TabsTrigger>
           </TabsList>
@@ -46,6 +48,16 @@ const Index = () => {
               </CardHeader>
               <CardContent>
                 <DailyQuiz addPoints={addPoints} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="puzzle">
+            <Card>
+              <CardHeader className="bg-indigo-50">
+                <CardTitle className="text-2xl text-indigo-800">Puzzle Master</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <PuzzleMaster addPoints={addPoints} />
               </CardContent>
             </Card>
           </TabsContent>
