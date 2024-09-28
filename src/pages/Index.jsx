@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,6 +12,26 @@ import { LoginSignup } from '@/components/LoginSignup';
 const Index = () => {
   const [points, setPoints] = useState(0);
   const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Load the donation widget script
+    const script = document.createElement('script');
+    script.src = '/donation-widget.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    // Initialize the donation widget after the script has loaded
+    script.onload = () => {
+      if (window.createDonationWidget) {
+        window.createDonationWidget('your-upi-id@upi', 10, 'Support UniW');
+      }
+    };
+
+    // Clean up the script when the component unmounts
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   const addPoints = (amount) => {
     setPoints(prevPoints => prevPoints + amount);
