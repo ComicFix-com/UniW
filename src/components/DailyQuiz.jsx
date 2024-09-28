@@ -2,38 +2,87 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 
-export const DailyQuiz = () => {
+const quizQuestions = [
+  {
+    question: "What is the capital of France?",
+    options: ["Paris", "London", "Berlin", "Madrid"],
+    correctAnswer: "Paris"
+  },
+  {
+    question: "Which planet is known as the Red Planet?",
+    options: ["Mars", "Venus", "Jupiter", "Saturn"],
+    correctAnswer: "Mars"
+  },
+  {
+    question: "Who painted the Mona Lisa?",
+    options: ["Leonardo da Vinci", "Vincent van Gogh", "Pablo Picasso", "Michelangelo"],
+    correctAnswer: "Leonardo da Vinci"
+  }
+];
+
+export const DailyQuiz = ({ addPoints }) => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [isAnswered, setIsAnswered] = useState(false);
+  const [score, setScore] = useState(0);
 
   const handleSubmit = () => {
-    // Handle quiz submission
-    console.log("Submitted answer:", selectedAnswer);
+    if (selectedAnswer === quizQuestions[currentQuestion].correctAnswer) {
+      setScore(prevScore => prevScore + 1);
+      addPoints(10);
+    }
+    setIsAnswered(true);
   };
 
+  const nextQuestion = () => {
+    setSelectedAnswer(null);
+    setIsAnswered(false);
+    if (currentQuestion < quizQuestions.length - 1) {
+      setCurrentQuestion(prevQuestion => prevQuestion + 1);
+    }
+  };
+
+  const resetQuiz = () => {
+    setCurrentQuestion(0);
+    setSelectedAnswer(null);
+    setIsAnswered(false);
+    setScore(0);
+  };
+
+  const currentQuizQuestion = quizQuestions[currentQuestion];
+
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-4">Today's Quiz Question</h2>
-      <p className="mb-4">What is the capital of France?</p>
-      <RadioGroup value={selectedAnswer} onValueChange={setSelectedAnswer} className="mb-4">
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="paris" id="paris" />
-          <Label htmlFor="paris">Paris</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="london" id="london" />
-          <Label htmlFor="london">London</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="berlin" id="berlin" />
-          <Label htmlFor="berlin">Berlin</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="madrid" id="madrid" />
-          <Label htmlFor="madrid">Madrid</Label>
-        </div>
+    <div className="max-w-2xl mx-auto">
+      <h2 className="text-2xl font-semibold mb-4">Question {currentQuestion + 1} of {quizQuestions.length}</h2>
+      <p className="mb-4 text-lg">{currentQuizQuestion.question}</p>
+      <RadioGroup value={selectedAnswer} onValueChange={setSelectedAnswer} className="mb-4 space-y-2">
+        {currentQuizQuestion.options.map((option, index) => (
+          <div key={index} className={`flex items-center space-x-2 p-2 rounded ${isAnswered ? (option === currentQuizQuestion.correctAnswer ? 'bg-green-100' : selectedAnswer === option ? 'bg-red-100' : '') : 'hover:bg-gray-100'}`}>
+            <RadioGroupItem value={option} id={`option-${index}`} disabled={isAnswered} />
+            <Label htmlFor={`option-${index}`} className="flex-grow cursor-pointer">
+              {option}
+            </Label>
+            {isAnswered && option === currentQuizQuestion.correctAnswer && (
+              <CheckCircle2 className="h-5 w-5 text-green-500" />
+            )}
+            {isAnswered && selectedAnswer === option && option !== currentQuizQuestion.correctAnswer && (
+              <AlertCircle className="h-5 w-5 text-red-500" />
+            )}
+          </div>
+        ))}
       </RadioGroup>
-      <Button onClick={handleSubmit} disabled={!selectedAnswer}>Submit Answer</Button>
+      {!isAnswered ? (
+        <Button onClick={handleSubmit} disabled={!selectedAnswer}>Submit Answer</Button>
+      ) : currentQuestion < quizQuestions.length - 1 ? (
+        <Button onClick={nextQuestion}>Next Question</Button>
+      ) : (
+        <div>
+          <p className="mb-4 text-xl font-bold">Quiz Complete! Your score: {score}/{quizQuestions.length}</p>
+          <Button onClick={resetQuiz}>Restart Quiz</Button>
+        </div>
+      )}
     </div>
   );
 };
