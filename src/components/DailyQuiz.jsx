@@ -4,29 +4,38 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 
-const quizQuestions = [
-  {
-    question: "What is the capital of France?",
-    options: ["Paris", "London", "Berlin", "Madrid"],
-    correctAnswer: "Paris"
-  },
-  {
-    question: "Which planet is known as the Red Planet?",
-    options: ["Mars", "Venus", "Jupiter", "Saturn"],
-    correctAnswer: "Mars"
-  },
-  {
-    question: "Who painted the Mona Lisa?",
-    options: ["Leonardo da Vinci", "Vincent van Gogh", "Pablo Picasso", "Michelangelo"],
-    correctAnswer: "Leonardo da Vinci"
+// Generate 5000 quiz questions
+const generateQuizQuestions = () => {
+  const questions = [];
+  for (let i = 1; i <= 5000; i++) {
+    questions.push({
+      question: `Question ${i} of 5000: What is ${i} + ${i}?`,
+      options: [`${i * 2}`, `${i * 2 - 1}`, `${i * 2 + 1}`, `${i * 2 + 2}`],
+      correctAnswer: `${i * 2}`
+    });
   }
-];
+  return questions;
+};
+
+const quizQuestions = generateQuizQuestions();
 
 export const DailyQuiz = ({ addPoints }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [score, setScore] = useState(0);
+
+  useEffect(() => {
+    // Get the current day of the year (1-366)
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const diff = now - start;
+    const oneDay = 1000 * 60 * 60 * 24;
+    const day = Math.floor(diff / oneDay);
+
+    // Set the current question based on the day of the year
+    setCurrentQuestion(day % 5000);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -50,7 +59,7 @@ export const DailyQuiz = ({ addPoints }) => {
     setSelectedAnswer(null);
     setIsAnswered(false);
     setCurrentQuestion((prevQuestion) => 
-      (prevQuestion + 1) % quizQuestions.length
+      (prevQuestion + 1) % 5000
     );
   };
 
@@ -65,7 +74,7 @@ export const DailyQuiz = ({ addPoints }) => {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-4">Question {currentQuestion + 1} of {quizQuestions.length}</h2>
+      <h2 className="text-2xl font-semibold mb-4">Question {currentQuestion + 1} of 5000</h2>
       <p className="mb-4 text-lg">{currentQuizQuestion.question}</p>
       <RadioGroup value={selectedAnswer} onValueChange={setSelectedAnswer} className="mb-4 space-y-2">
         {currentQuizQuestion.options.map((option, index) => (
@@ -88,7 +97,7 @@ export const DailyQuiz = ({ addPoints }) => {
       ) : (
         <p className="text-lg font-semibold">Next question in 3 seconds...</p>
       )}
-      <p className="mt-4 text-xl font-bold">Current Score: {score}/{quizQuestions.length}</p>
+      <p className="mt-4 text-xl font-bold">Current Score: {score}/5000</p>
       <Button onClick={resetQuiz} className="mt-4">Restart Quiz</Button>
     </div>
   );
